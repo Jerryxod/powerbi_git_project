@@ -1,0 +1,33 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-US
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_QueryOrder = ["customers","date_dimension","inventory","marketing_campaigns","products","returns","sales","suppliers"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table customers
+ref table DateTableTemplate_950ef1bb-d072-4bbb-83ee-c1d0b6dfe0ee
+ref table LocalDateTable_63493958-9db4-4fc5-a34b-37f0008dc215
+ref table date_dimension
+ref table LocalDateTable_7c9655a4-7aba-4dfe-9517-2a4f72412c31
+ref table inventory
+ref table marketing_campaigns
+ref table LocalDateTable_7435586d-1b41-46c5-b047-7a0aabf68741
+ref table LocalDateTable_891c4c9a-14d8-428a-8d98-895b7d3ef81a
+ref table products
+ref table LocalDateTable_4a89dc75-453c-42a4-bc73-2924061e214f
+ref table returns
+ref table LocalDateTable_f23a0272-6499-4e43-abc1-4db1d14f4063
+ref table sales
+ref table suppliers
+ref table LocalDateTable_72f4e5b3-e5ab-4135-ae0f-80a2ff11b6b7
+
+ref cultureInfo en-US
+

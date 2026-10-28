@@ -1,0 +1,67 @@
+relationship a8be9c26-3658-4501-a310-682d6f4e27e9
+	joinOnDateBehavior: datePartOnly
+	fromColumn: customers.JoinDate
+	toColumn: LocalDateTable_63493958-9db4-4fc5-a34b-37f0008dc215.Date
+
+relationship b759054d-5275-4b37-9eb7-47c54d028db7
+	joinOnDateBehavior: datePartOnly
+	fromColumn: date_dimension.Date
+	toColumn: LocalDateTable_7c9655a4-7aba-4dfe-9517-2a4f72412c31.Date
+
+relationship 6255e07d-59dc-4948-b2de-37d5ae47a17b
+	joinOnDateBehavior: datePartOnly
+	fromColumn: marketing_campaigns.StartDate
+	toColumn: LocalDateTable_7435586d-1b41-46c5-b047-7a0aabf68741.Date
+
+relationship fea8efaa-61bc-4adc-b412-e363633f893b
+	joinOnDateBehavior: datePartOnly
+	fromColumn: marketing_campaigns.EndDate
+	toColumn: LocalDateTable_891c4c9a-14d8-428a-8d98-895b7d3ef81a.Date
+
+relationship 5630eebc-dc49-466c-bb99-136627689914
+	joinOnDateBehavior: datePartOnly
+	fromColumn: products.LaunchDate
+	toColumn: LocalDateTable_4a89dc75-453c-42a4-bc73-2924061e214f.Date
+
+relationship AutoDetected_958704fb-677e-4b1f-affc-d569ed88a6f8
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: products.ProductID
+	toColumn: inventory.ProductID
+
+relationship 66fd0906-f6d1-46c1-95ed-f6e9f24a2f4a
+	joinOnDateBehavior: datePartOnly
+	fromColumn: returns.ReturnDate
+	toColumn: LocalDateTable_f23a0272-6499-4e43-abc1-4db1d14f4063.Date
+
+relationship AutoDetected_aa959db4-6796-44f4-8a5d-f017d51daeb4
+	fromColumn: sales.CustomerID
+	toColumn: customers.CustomerID
+
+relationship AutoDetected_57596f1f-b594-484c-93d7-d31be9e4babf
+	fromColumn: sales.ProductID
+	toColumn: inventory.ProductID
+
+relationship AutoDetected_c343ad41-6485-4aee-ae83-43e9e6dd4b33
+	fromColumn: sales.CampaignID
+	toColumn: marketing_campaigns.CampaignID
+
+relationship AutoDetected_2e01de08-0bc2-4736-b272-e959b7091dfd
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: returns.OrderID
+	toColumn: sales.OrderID
+
+relationship AutoDetected_73f8cd03-96bb-494d-900b-0352f3a7ec89
+	fromColumn: inventory.SupplierID
+	toColumn: suppliers.SupplierID
+
+relationship 5edf1062-d1d7-f62e-5067-e380513b00db
+	fromColumn: sales.OrderDate
+	toColumn: date_dimension.Date
+
+relationship aead370f-e75e-429f-a0c3-bf72cf1b58ac
+	joinOnDateBehavior: datePartOnly
+	fromColumn: customers.'first purchase date'
+	toColumn: LocalDateTable_72f4e5b3-e5ab-4135-ae0f-80a2ff11b6b7.Date
+

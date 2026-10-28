@@ -1,0 +1,91 @@
+table date_dimension
+	lineageTag: 372cd1a0-8500-4a9e-98c3-c2b3d8e309d8
+
+	column Date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 921277aa-20d9-43b8-a930-b82e64bd997f
+		summarizeBy: none
+		sourceColumn: Date
+
+		variation Variation
+			isDefault
+			relationship: b759054d-5275-4b37-9eb7-47c54d028db7
+			defaultHierarchy: LocalDateTable_7c9655a4-7aba-4dfe-9517-2a4f72412c31.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Year
+		dataType: int64
+		formatString: 0
+		lineageTag: 9e431b36-31a0-4e95-942f-a7c52f92bfb1
+		summarizeBy: sum
+		sourceColumn: Year
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quarter
+		dataType: string
+		lineageTag: e1d4ef7a-35ff-4e89-8770-bffb1c0eabfe
+		summarizeBy: none
+		sourceColumn: Quarter
+
+		annotation SummarizationSetBy = Automatic
+
+	column Month
+		dataType: int64
+		formatString: 0
+		lineageTag: c310e591-d1fd-4ec7-82db-0d78f64af3db
+		summarizeBy: sum
+		sourceColumn: Month
+
+		annotation SummarizationSetBy = Automatic
+
+	column MonthName
+		dataType: string
+		lineageTag: 8cfbbec4-3c64-46a5-a232-4e4e1cb07429
+		summarizeBy: none
+		sourceColumn: MonthName
+
+		annotation SummarizationSetBy = Automatic
+
+	column Week
+		dataType: int64
+		formatString: 0
+		lineageTag: 91e4e12d-cfdf-4b0e-b6e7-e03e82c41415
+		summarizeBy: sum
+		sourceColumn: Week
+
+		annotation SummarizationSetBy = Automatic
+
+	column DayOfWeek
+		dataType: string
+		lineageTag: 790115d2-e784-42a3-9108-6805ed55b19a
+		summarizeBy: none
+		sourceColumn: DayOfWeek
+
+		annotation SummarizationSetBy = Automatic
+
+	column IsWeekend
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 7c0ac5fd-68a8-4b24-915a-7044c10a235c
+		summarizeBy: none
+		sourceColumn: IsWeekend
+
+		annotation SummarizationSetBy = Automatic
+
+	partition date_dimension = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\Cipher\Documents\portfolio_project\New folder\date_dimension.csv"),[Delimiter=",", Columns=8, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"Date", type date}, {"Year", Int64.Type}, {"Quarter", type text}, {"Month", Int64.Type}, {"MonthName", type text}, {"Week", Int64.Type}, {"DayOfWeek", type text}, {"IsWeekend", type logical}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

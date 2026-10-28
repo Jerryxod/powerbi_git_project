@@ -1,0 +1,68 @@
+table inventory
+	lineageTag: 495353f3-3c77-4189-a9f2-898bc52f33a4
+
+	column ProductID
+		dataType: string
+		lineageTag: 0311be47-d384-4c36-8236-a9766e5ca54a
+		summarizeBy: none
+		sourceColumn: ProductID
+
+		annotation SummarizationSetBy = Automatic
+
+	column StockLevel
+		dataType: int64
+		formatString: 0
+		lineageTag: 320c17a9-ecf6-47c8-b1c0-2fb0f9053292
+		summarizeBy: sum
+		sourceColumn: StockLevel
+
+		annotation SummarizationSetBy = Automatic
+
+	column ReorderPoint
+		dataType: int64
+		formatString: 0
+		lineageTag: 809d8e58-1645-4f98-a5ca-9ee474498d68
+		summarizeBy: sum
+		sourceColumn: ReorderPoint
+
+		annotation SummarizationSetBy = Automatic
+
+	column Warehouse
+		dataType: string
+		lineageTag: ced31f30-535f-4462-9c77-54d46fb5dd24
+		summarizeBy: none
+		sourceColumn: Warehouse
+
+		annotation SummarizationSetBy = Automatic
+
+	column SupplierID
+		dataType: string
+		lineageTag: c99cfce2-98e2-4209-814c-e5dc841bcb8d
+		summarizeBy: none
+		sourceColumn: SupplierID
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Stock Status'
+		dataType: string
+		lineageTag: f10e409e-f4e0-4e1d-96b6-0da5120af5ee
+		summarizeBy: none
+		sourceColumn: Stock Status
+
+		annotation SummarizationSetBy = Automatic
+
+	partition inventory = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\Cipher\Documents\portfolio_project\New folder\inventory.csv"),[Delimiter=",", Columns=5, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"ProductID", type text}, {"StockLevel", Int64.Type}, {"ReorderPoint", Int64.Type}, {"Warehouse", type text}, {"SupplierID", type text}}),
+				    #"Added Conditional Column" = Table.AddColumn(#"Changed Type", "Stock Status", each if [StockLevel] < [ReorderPoint] then "Needs Reorder" else "Healthy")
+				in
+				    #"Added Conditional Column"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

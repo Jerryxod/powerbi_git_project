@@ -1,0 +1,65 @@
+table returns
+	lineageTag: 646a07d9-bbb3-4c10-886f-b8c038e24f6a
+
+	column ReturnID
+		dataType: string
+		lineageTag: 5e12bb20-5355-41bf-aa56-1c40f32bc656
+		summarizeBy: none
+		sourceColumn: ReturnID
+
+		annotation SummarizationSetBy = Automatic
+
+	column OrderID
+		dataType: string
+		lineageTag: 7cdd065e-9b11-4339-82b8-f89db4ac156a
+		summarizeBy: none
+		sourceColumn: OrderID
+
+		annotation SummarizationSetBy = Automatic
+
+	column ReturnDate
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: cb42531a-7c54-4892-bf1f-c9edc30c4bb6
+		summarizeBy: none
+		sourceColumn: ReturnDate
+
+		variation Variation
+			isDefault
+			relationship: 66fd0906-f6d1-46c1-95ed-f6e9f24a2f4a
+			defaultHierarchy: LocalDateTable_f23a0272-6499-4e43-abc1-4db1d14f4063.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column ReturnReason
+		dataType: string
+		lineageTag: 0480705e-5d52-46ab-8904-6dda32eacd59
+		summarizeBy: none
+		sourceColumn: ReturnReason
+
+		annotation SummarizationSetBy = Automatic
+
+	column RefundAmount
+		dataType: double
+		lineageTag: bc8971d3-7a47-4ca1-8ca9-33484d09f5b7
+		summarizeBy: sum
+		sourceColumn: RefundAmount
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition returns = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\Cipher\Documents\portfolio_project\New folder\returns.csv"),[Delimiter=",", Columns=5, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"ReturnID", type text}, {"OrderID", type text}, {"ReturnDate", type date}, {"ReturnReason", type text}, {"RefundAmount", type number}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,138 @@
+table sales
+	lineageTag: fc905b81-304a-4fd9-9f77-34a62b18fa4f
+
+	column OrderID
+		dataType: string
+		lineageTag: 4ea3f065-c0d4-4692-8ece-dcfa0468e287
+		summarizeBy: none
+		sourceColumn: OrderID
+
+		annotation SummarizationSetBy = Automatic
+
+	column OrderDate
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 49f94f61-c2ca-4f8d-89bf-4a3f3ccb57df
+		summarizeBy: none
+		sourceColumn: OrderDate
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column CustomerID
+		dataType: string
+		lineageTag: 69b4df86-1063-4649-abe5-5ba24ada4c0c
+		summarizeBy: none
+		sourceColumn: CustomerID
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProductID
+		dataType: string
+		lineageTag: 1b15f5e1-f9fd-47a0-a196-2fb6314ab715
+		summarizeBy: none
+		sourceColumn: ProductID
+
+		annotation SummarizationSetBy = Automatic
+
+	column Region
+		dataType: string
+		lineageTag: 7c79c0a8-5b55-4ab9-b841-deee8916621c
+		summarizeBy: none
+		sourceColumn: Region
+
+		annotation SummarizationSetBy = Automatic
+
+	column SalesChannel
+		dataType: string
+		lineageTag: ecfabfbb-7ff4-48b2-90aa-4fb0bcedf087
+		summarizeBy: none
+		sourceColumn: SalesChannel
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quantity
+		dataType: int64
+		formatString: 0
+		lineageTag: ee006805-5bb7-43bd-ab2c-7e3ef7a579fe
+		summarizeBy: sum
+		sourceColumn: Quantity
+
+		annotation SummarizationSetBy = Automatic
+
+	column UnitPrice
+		dataType: double
+		lineageTag: 897e3b46-deb5-45fd-83eb-1084f86bc079
+		summarizeBy: sum
+		sourceColumn: UnitPrice
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Cost
+		dataType: double
+		lineageTag: b066287d-4fa4-4e9b-844d-12dd2a95d323
+		summarizeBy: sum
+		sourceColumn: Cost
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Profit
+		dataType: double
+		lineageTag: f66c523c-d92d-498e-8c71-8b4c09d6b49a
+		summarizeBy: sum
+		sourceColumn: Profit
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column CampaignID
+		dataType: string
+		lineageTag: 0a1c92a9-5694-494c-9762-336301eb18d8
+		summarizeBy: none
+		sourceColumn: CampaignID
+
+		annotation SummarizationSetBy = Automatic
+
+	column Revenue
+		dataType: double
+		lineageTag: 9de3edb5-b8c8-4f0f-9da3-0843520f9bb9
+		summarizeBy: none
+		sourceColumn: Revenue
+
+		annotation SummarizationSetBy = User
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition sales = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\Cipher\Documents\portfolio_project\New folder\sales.csv"),[Delimiter=",", Columns=12, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"OrderID", type text}, {"OrderDate", type date}, {"CustomerID", type text}, {"ProductID", type text}, {"Region", type text}, {"SalesChannel", type text}, {"Quantity", Int64.Type}, {"UnitPrice", type number}, {"Revenue", type number}, {"Cost", type number}, {"Profit", type number}, {"CampaignID", type text}}),
+				    #"Removed Duplicates" = Table.Distinct(#"Changed Type"),
+				    #"Added Custom" = Table.AddColumn(#"Removed Duplicates", "Revenue 2", each [Quantity] * [UnitPrice]),
+				    #"Reordered Columns" = Table.ReorderColumns(#"Added Custom",{"OrderID", "OrderDate", "CustomerID", "ProductID", "Region", "SalesChannel", "Quantity", "UnitPrice", "Revenue", "Revenue 2", "Cost", "Profit", "CampaignID"}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Reordered Columns",{"Revenue"}),
+				    #"Renamed Columns" = Table.RenameColumns(#"Removed Columns",{{"Revenue 2", "Revenue"}}),
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Renamed Columns",{{"OrderDate", type date}}),
+				    #"Filtered Rows" = Table.SelectRows(#"Changed Type1", each true),
+				    #"Changed Type2" = Table.TransformColumnTypes(#"Filtered Rows",{{"Revenue", type number}, {"Profit", type number}}),
+				    #"Removed Duplicates1" = Table.Distinct(#"Changed Type2"),
+				    #"Removed Errors" = Table.RemoveRowsWithErrors(#"Removed Duplicates1"),
+				    #"Merged Queries" = Table.NestedJoin(#"Removed Errors", {"OrderID"}, returns, {"ReturnID"}, "returns", JoinKind.LeftOuter),
+				    #"Expanded returns" = Table.ExpandTableColumn(#"Merged Queries", "returns", {"ReturnID"}, {"returns.ReturnID"}),
+				    #"Removed Columns1" = Table.RemoveColumns(#"Expanded returns",{"returns.ReturnID"})
+				in
+				    #"Removed Columns1"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

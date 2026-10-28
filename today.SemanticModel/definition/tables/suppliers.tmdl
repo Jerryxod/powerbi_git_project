@@ -1,0 +1,58 @@
+table suppliers
+	lineageTag: 678ad31e-6371-4215-94a0-fdc3c4d1e12a
+
+	column SupplierID
+		dataType: string
+		lineageTag: 5d3eb3ff-3296-4f4b-80ca-e0652d98756b
+		summarizeBy: none
+		sourceColumn: SupplierID
+
+		annotation SummarizationSetBy = Automatic
+
+	column SupplierName
+		dataType: string
+		lineageTag: 352c3448-e4f5-421c-9229-12dd883f384d
+		summarizeBy: none
+		sourceColumn: SupplierName
+
+		annotation SummarizationSetBy = Automatic
+
+	column Country
+		dataType: string
+		lineageTag: 95cfe65b-df49-46cb-b2ce-826ad94bff54
+		summarizeBy: none
+		sourceColumn: Country
+
+		annotation SummarizationSetBy = Automatic
+
+	column LeadTimeDays
+		dataType: int64
+		formatString: 0
+		lineageTag: feae6b79-f27c-4ca2-bc79-74d6ddd008e2
+		summarizeBy: none
+		sourceColumn: LeadTimeDays
+
+		annotation SummarizationSetBy = Automatic
+
+	column SupplierRating
+		dataType: double
+		lineageTag: 055df9e8-0d54-4d6d-b01b-d91bdd1f73fc
+		summarizeBy: none
+		sourceColumn: SupplierRating
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition suppliers = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\Cipher\Documents\portfolio_project\New folder\suppliers.csv"),[Delimiter=",", Columns=5, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"SupplierID", type text}, {"SupplierName", type text}, {"Country", type text}, {"LeadTimeDays", Int64.Type}, {"SupplierRating", type number}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

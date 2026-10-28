@@ -1,0 +1,94 @@
+table products
+	lineageTag: 43103078-c8c7-4e5e-899e-b2f7410f1500
+
+	column ProductID
+		dataType: string
+		lineageTag: 26864f05-1fa3-4adf-b469-9f0c97c1c6f2
+		summarizeBy: none
+		sourceColumn: ProductID
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProductName
+		dataType: string
+		lineageTag: e8cae63e-af91-49c3-b0dd-34fb63fe5ded
+		summarizeBy: none
+		sourceColumn: ProductName
+
+		annotation SummarizationSetBy = Automatic
+
+	column Category
+		dataType: string
+		lineageTag: 9f487708-7ebd-4cc0-a26c-71b07aaa2f53
+		summarizeBy: none
+		sourceColumn: Category
+
+		annotation SummarizationSetBy = Automatic
+
+	column Brand
+		dataType: string
+		lineageTag: dee368f3-a54f-48c1-9765-b0f6095bf7d2
+		summarizeBy: none
+		sourceColumn: Brand
+
+		annotation SummarizationSetBy = Automatic
+
+	column CostPrice
+		dataType: double
+		lineageTag: 866e97b6-a3ad-4f1a-97e4-4cd2c730fb3a
+		summarizeBy: sum
+		sourceColumn: CostPrice
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column SellingPrice
+		dataType: double
+		lineageTag: 9bc6b2ae-a148-4526-8269-876b11682163
+		summarizeBy: sum
+		sourceColumn: SellingPrice
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column LaunchDate
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: f90e4c18-e70f-4a6a-aea6-11c4f346680f
+		summarizeBy: none
+		sourceColumn: LaunchDate
+
+		variation Variation
+			isDefault
+			relationship: 5630eebc-dc49-466c-bb99-136627689914
+			defaultHierarchy: LocalDateTable_4a89dc75-453c-42a4-bc73-2924061e214f.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Profit Per Unit'
+		dataType: string
+		lineageTag: bbb1f7c5-a8fe-454b-8ff1-443c7ca6344d
+		summarizeBy: none
+		sourceColumn: Profit Per Unit
+
+		annotation SummarizationSetBy = Automatic
+
+	partition products = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\Cipher\Documents\portfolio_project\New folder\products.csv"),[Delimiter=",", Columns=7, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"ProductID", type text}, {"ProductName", type text}, {"Category", type text}, {"Brand", type text}, {"CostPrice", type number}, {"SellingPrice", type number}, {"LaunchDate", type date}}),
+				    #"Added Custom" = Table.AddColumn(#"Changed Type", "Profit Per Unit", each [SellingPrice] - [CostPrice])
+				in
+				    #"Added Custom"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

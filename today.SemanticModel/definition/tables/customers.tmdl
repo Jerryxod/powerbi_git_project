@@ -1,0 +1,236 @@
+table customers
+	lineageTag: a86b11c2-a33a-4d73-93f4-230c4946b29e
+
+	measure Orders =
+			
+			COUNT(Sales[OrderID])
+		formatString: 0
+		lineageTag: 04110edb-4915-4f17-80fa-d0975fe594ca
+
+	measure Cost =
+			
+			SUM(Sales[Cost])
+		lineageTag: 21947810-e693-4598-8cad-9209bb158f97
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure Revenue =
+			
+			SUM(sales[Revenue])
+		lineageTag: 9de25df5-a921-446e-83cd-4ac138bea2dd
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure AOV =
+			
+			DIVIDE(
+			[Revenue],
+			[Orders]
+			)
+		lineageTag: 51750526-fe8a-4373-92ae-3d26a516ce00
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure Profit =
+			
+			SUM(Sales[Profit])
+		lineageTag: 7977e895-867c-4f7f-9a4a-e08b8d0ed32b
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Profit Margin' =
+			
+			DIVIDE(
+			[Profit],
+			[Revenue]
+			)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 56e371a4-224f-4daa-abfe-062b060cabf2
+
+	measure 'Repeat Customer Rate' =
+			
+			DIVIDE(
+			COUNTROWS(
+			FILTER(
+			VALUES(Sales[CustomerID]),
+			CALCULATE(COUNT(Sales[OrderID])) > 1
+			)
+			),
+			DISTINCTCOUNT(Sales[CustomerID])
+			)
+		lineageTag: 7f2a8390-e1de-46ce-9451-002b43bccc23
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Revenue LM' = CALCULATE([Revenue],DATEADD(date_dimension[Date], -1, MONTH))
+		lineageTag: 8a2aa393-aaf4-4381-a7bf-858c8821128b
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Revenue Growth (%)' = DIVIDE([Revenue]-[Revenue LM],[Revenue LM])
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: e101746b-5082-43db-b915-1f93ac383b9f
+
+	measure 'Revenue YTD' = TOTALYTD([Revenue],date_dimension[Date])
+		lineageTag: f6bcf5f1-1876-44de-93b9-37a53f442c58
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Profit YTD' = TOTALYTD([Profit],date_dimension[Date])
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 1192cbf3-21a4-498a-940f-3e05e0733c67
+
+	measure 'Total orders' = COUNT(sales[OrderID])
+		formatString: 0
+		lineageTag: df2d6d30-ad20-4813-8606-7cc6124df8ca
+
+	measure 'repeat customers' = COUNTROWS(FILTER(VALUES(sales[CustomerID]),CALCULATE(COUNT(sales[OrderID]))>1))
+		formatString: 0
+		lineageTag: 2fb83360-278a-4eca-ae59-a187660150bc
+
+	measure 'total customers' = DISTINCTCOUNT(sales[CustomerID])
+		formatString: 0
+		lineageTag: 4963e5df-e1bb-4300-bab3-2d6365f2f4d9
+
+	measure 'customer retention rate' = DIVIDE([repeat customers],[total customers])
+		lineageTag: ef32d517-7fd9-45d7-a0d9-7697694a3a95
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'revenue per customer' = DIVIDE([Revenue], [total customers])
+		lineageTag: 94023ea1-bc0a-4db8-b85c-6608966eeeca
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'customer lifetime value' = DIVIDE([Revenue],[total customers])
+		lineageTag: cc86769a-e97d-42c8-a8ea-e49f3a5fa055
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'new customers' = COUNTROWS(FILTER(customers,customers[first purchase date]>=MIN(date_dimension[Date])&&customers[first purchase date]<=MAX(date_dimension[Date])))
+		formatString: 0
+		lineageTag: 499f1bea-c089-4499-a201-079f1a898f95
+
+	column CustomerID
+		dataType: string
+		lineageTag: a6e30cb9-23b1-4d04-a19e-20de6a3fa1ea
+		summarizeBy: none
+		sourceColumn: CustomerID
+
+		annotation SummarizationSetBy = Automatic
+
+	column CustomerName
+		dataType: string
+		lineageTag: 9ec0ccc0-aa24-48c8-874b-e0d387e9aa8a
+		summarizeBy: none
+		sourceColumn: CustomerName
+
+		annotation SummarizationSetBy = Automatic
+
+	column Gender
+		dataType: string
+		lineageTag: 36e81461-8f81-48bb-bb28-1c8af62f4446
+		summarizeBy: none
+		sourceColumn: Gender
+
+		annotation SummarizationSetBy = Automatic
+
+	column Age
+		dataType: int64
+		formatString: 0
+		lineageTag: df1096fa-53b8-42fa-88b0-a090f0fdaac8
+		summarizeBy: sum
+		sourceColumn: Age
+
+		annotation SummarizationSetBy = Automatic
+
+	column City
+		dataType: string
+		lineageTag: 7807aaab-2ffe-4cb1-bf92-50319c839b61
+		summarizeBy: none
+		sourceColumn: City
+
+		annotation SummarizationSetBy = Automatic
+
+	column State
+		dataType: string
+		lineageTag: b73963ee-82cf-4c76-8365-ebb62d3f8d37
+		summarizeBy: none
+		sourceColumn: State
+
+		annotation SummarizationSetBy = Automatic
+
+	column Country
+		dataType: string
+		lineageTag: 16ab72fb-074a-45c0-9d99-5bd60e7bf8ea
+		summarizeBy: none
+		sourceColumn: Country
+
+		annotation SummarizationSetBy = Automatic
+
+	column JoinDate
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 6e8e8d8f-5cdc-491c-9982-54f3a18c7d54
+		summarizeBy: none
+		sourceColumn: JoinDate
+
+		variation Variation
+			isDefault
+			relationship: a8be9c26-3658-4501-a310-682d6f4e27e9
+			defaultHierarchy: LocalDateTable_63493958-9db4-4fc5-a34b-37f0008dc215.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column CustomerSegment
+		dataType: string
+		lineageTag: a774df53-a7aa-4587-ac6e-beab63df6679
+		summarizeBy: none
+		sourceColumn: CustomerSegment
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Age Group'
+		dataType: string
+		lineageTag: 53a3a842-d7ac-4cd0-8184-63eff81c0e2b
+		summarizeBy: none
+		sourceColumn: Age Group
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'first purchase date' = CALCULATE(MIN(sales[OrderDate]),FILTER(sales,sales[CustomerID]=customers[CustomerID]))
+		formatString: General Date
+		lineageTag: 27b1e029-3f66-4e30-9a3d-214d386fc94b
+		summarizeBy: none
+
+		variation Variation
+			isDefault
+			relationship: aead370f-e75e-429f-a0c3-bf72cf1b58ac
+			defaultHierarchy: LocalDateTable_72f4e5b3-e5ab-4135-ae0f-80a2ff11b6b7.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'customer type' = IF(CALCULATE(COUNT(sales[OrderDate]))>1,"Repeat Customer", "One-time Customer")
+		lineageTag: 9e42933b-93e3-4104-b310-bd6507b976e8
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition customers = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\Cipher\Documents\portfolio_project\New folder\customers.csv"),[Delimiter=",", Columns=9, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"CustomerID", type text}, {"CustomerName", type text}, {"Gender", type text}, {"Age", Int64.Type}, {"City", type text}, {"State", type text}, {"Country", type text}, {"JoinDate", type date}, {"CustomerSegment", type text}}),
+				    #"Added Conditional Column" = Table.AddColumn(#"Changed Type", "Age Group", each if [Age] > 60 then "+ 60" else if [Age] >= 46 then "46 - 60" else if [Age] >= 36 then "36 - 45" else if [Age] >= 26 then "26 - 35" else "18 - 25"),
+				    #"Reordered Columns" = Table.ReorderColumns(#"Added Conditional Column",{"CustomerID", "CustomerName", "Gender", "Age", "Age Group", "City", "State", "Country", "JoinDate", "CustomerSegment"})
+				in
+				    #"Reordered Columns"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

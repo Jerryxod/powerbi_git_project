@@ -1,0 +1,88 @@
+table marketing_campaigns
+	lineageTag: 0e94fdd5-b412-4b85-827f-159afb013d9b
+
+	column CampaignID
+		dataType: string
+		lineageTag: 5d6a10bc-5273-4c44-bb5b-c6676bcf7501
+		summarizeBy: none
+		sourceColumn: CampaignID
+
+		annotation SummarizationSetBy = Automatic
+
+	column CampaignName
+		dataType: string
+		lineageTag: 228bcf1c-60b1-4fb5-80e3-698561809a98
+		summarizeBy: none
+		sourceColumn: CampaignName
+
+		annotation SummarizationSetBy = Automatic
+
+	column Channel
+		dataType: string
+		lineageTag: 6686e435-bd9c-40e7-9e44-b27eb42a7842
+		summarizeBy: none
+		sourceColumn: Channel
+
+		annotation SummarizationSetBy = Automatic
+
+	column StartDate
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 5e77b21f-8cb9-4cb9-9b65-4c53e7fc6ead
+		summarizeBy: none
+		sourceColumn: StartDate
+
+		variation Variation
+			isDefault
+			relationship: 6255e07d-59dc-4948-b2de-37d5ae47a17b
+			defaultHierarchy: LocalDateTable_7435586d-1b41-46c5-b047-7a0aabf68741.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Budget
+		dataType: int64
+		formatString: 0
+		lineageTag: b780f6c2-53b2-4a37-ade8-d5e560ee9461
+		summarizeBy: sum
+		sourceColumn: Budget
+
+		annotation SummarizationSetBy = Automatic
+
+	column CampaignType
+		dataType: string
+		lineageTag: 2895487e-73de-4cf4-8c27-3a75133e17d0
+		summarizeBy: none
+		sourceColumn: CampaignType
+
+		annotation SummarizationSetBy = Automatic
+
+	column EndDate
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: ba01be2f-cba8-4bea-8623-9d15c3e50512
+		summarizeBy: none
+		sourceColumn: EndDate
+
+		variation Variation
+			isDefault
+			relationship: fea8efaa-61bc-4adc-b412-e363633f893b
+			defaultHierarchy: LocalDateTable_891c4c9a-14d8-428a-8d98-895b7d3ef81a.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	partition marketing_campaigns = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\Cipher\Documents\portfolio_project\New folder\marketing_campaigns.csv"),[Delimiter=",", Columns=7, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"CampaignID", type text}, {"CampaignName", type text}, {"Channel", type text}, {"StartDate", type date}, {"Budget", Int64.Type}, {"CampaignType", type text}, {"EndDate", type date}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+
